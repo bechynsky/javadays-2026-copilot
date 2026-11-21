@@ -1,0 +1,27 @@
+# Při každém push do main a u každého pull requestu sestaví aplikaci a spustí testy.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        # Hotové řešení je ve složce reseni/. Pokud aplikaci vygenerujete do kořene, změňte na "."
+        working-directory: reseni
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Java 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Build + testy
+        run: mvn -B verify

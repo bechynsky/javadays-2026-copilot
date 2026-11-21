@@ -1,0 +1,29 @@
+{
+  "name": "JavaDays 2026 – GitHub Copilot demo",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25",
+      "jdkDistro": "ms",
+      "installMaven": "true"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
+    "ghcr.io/azure/azure-dev/azd:latest": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "postCreateCommand": "npm install -g @github/copilot",
+  "forwardPorts": [8080],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot-chat",
+        "vscjava.vscode-java-pack",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.azure-dev"
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# Maven
+target/
+# Azure Developer CLI (obsahuje lokální nastavení prostředí)
+.azure/
+# IDE
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+# OS
+.DS_Store
+Thumbs.db

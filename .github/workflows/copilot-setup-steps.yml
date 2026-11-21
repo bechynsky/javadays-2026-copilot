@@ -1,0 +1,28 @@
+# Připraví prostředí pro Copilot cloud agenta (běží v GitHub Actions),
+# aby mohl aplikaci sestavit a spustit testy ještě před otevřením pull requestu.
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # Job se musí jmenovat přesně copilot-setup-steps.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Java 25 + Maven cache
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
