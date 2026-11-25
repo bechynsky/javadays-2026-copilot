@@ -28,6 +28,7 @@ a hlavně, jak Copilota **nakonfigurovat**, aby odvedl práci podle pravidel va�
 | GET | `/` | pozdrav – kontrola, že aplikace běží |
 | POST | `/api/talks/{talkId}/ratings` | tělo `{"stars": 5}` → 201 + souhrn; mimo 1–5 → 400 |
 | GET | `/api/talks/{talkId}/ratings` | `{"talkId": "...", "count": 2, "average": 4.5}` |
+| GET | `/api/talks/top` | pole tří nejlépe hodnocených přednášek |
 
 ## Rychlý start
 ```bash
@@ -38,6 +39,11 @@ azd up                   # nasazení do Azure App Service (placený plán B1)
 azd down --purge         # úklid
 ```
 Nejrychlejší cesta: **Code → Codespaces → Create codespace** – vše potřebné se nainstaluje samo.
+
+Příklad získání nejlépe hodnocených přednášek:
+```bash
+curl http://localhost:8080/api/talks/top
+```
 
 ## Kde se učit dál
 - Kurz [GH-300T00-A: GitHub Copilot](https://learn.microsoft.com/en-us/training/courses/gh-300t00) a certifikace GitHub Copilot (GH-300)

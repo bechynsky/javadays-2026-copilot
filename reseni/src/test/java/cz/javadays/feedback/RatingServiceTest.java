@@ -3,6 +3,8 @@ package cz.javadays.feedback;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -71,5 +73,35 @@ class RatingServiceTest {
         assertThatThrownBy(() -> service.addRating("copilot", stars))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("1 až 5");
+    }
+
+    @Test
+    @DisplayName("Top 3 přednášky jsou seřazené podle průměru a počtu hodnocení")
+    void topRatedTalksAreSortedAndLimited() {
+        // Arrange
+        service.addRating("one", 5);
+        service.addRating("two", 4);
+        service.addRating("two", 4);
+        service.addRating("three", 4);
+        service.addRating("four", 2);
+        service.addRating("five", 1);
+
+        // Act
+        List<RatingSummary> topRated = service.topRated();
+
+        // Assert
+        assertThat(topRated).extracting(RatingSummary::talkId)
+                .containsExactly("one", "two", "three");
+        assertThat(topRated.get(1).count()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("Top bez hodnocení vrátí prázdné pole")
+    void topRatedIsEmptyWithoutRatings() {
+        // Act
+        List<RatingSummary> topRated = service.topRated();
+
+        // Assert
+        assertThat(topRated).isEmpty();
     }
 }
