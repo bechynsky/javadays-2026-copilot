@@ -18,11 +18,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 class RatingControllerTest {
 
     private MockMvc mockMvc;
+    private RatingService service;
 
     @BeforeEach
     void setUp() {
+        service = new RatingService();
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new RatingController(new RatingService()))
+                .standaloneSetup(new RatingController(service))
                 .build();
     }
 
@@ -55,5 +57,27 @@ class RatingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.count").value(0))
                 .andExpect(jsonPath("$.average").value(0.0));
+    }
+
+    @Test
+    @DisplayName("GET top vrátí tři nejlépe hodnocené přednášky")
+    void topRatedTalksAreReturned() throws Exception {
+        // Arrange
+        service.addRating("top", 5);
+        service.addRating("second", 4);
+        service.addRating("third", 3);
+        service.addRating("ignored", 1);
+
+        // Act
+        mockMvc.perform(get("/api/talks/top"))
+
+                // Assert
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].talkId").value("top"))
+                .andExpect(jsonPath("$[0].average").value(5.0))
+                .andExpect(jsonPath("$[1].talkId").value("second"))
+                .andExpect(jsonPath("$[2].talkId").value("third"));
     }
 }

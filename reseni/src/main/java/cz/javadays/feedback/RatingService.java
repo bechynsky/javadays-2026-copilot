@@ -1,5 +1,6 @@
 package cz.javadays.feedback;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,5 +41,19 @@ public class RatingService {
                 .orElse(0.0);
         double rounded = Math.round(average * 10) / 10.0;
         return new RatingSummary(talkId, ratings.size(), rounded);
+    }
+
+    /**
+     * Vrátí nejvýše tři hodnocené přednášky seřazené podle průměru a počtu hodnocení.
+     */
+    public List<RatingSummary> topRated() {
+        return ratingsByTalk.keySet().stream()
+                .map(this::summary)
+                .filter(summary -> summary.count() > 0)
+                .sorted(Comparator.comparingDouble(RatingSummary::average)
+                        .reversed()
+                        .thenComparing(Comparator.comparingLong(RatingSummary::count).reversed()))
+                .limit(3)
+                .toList();
     }
 }

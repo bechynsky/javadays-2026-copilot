@@ -1,5 +1,6 @@
 package cz.javadays.feedback;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST API pro hodnocení přednášek. Jen převádí HTTP požadavky na volání {@link RatingService}.
  */
 @RestController
-@RequestMapping("/api/talks/{talkId}/ratings")
+@RequestMapping("/api/talks")
 public class RatingController {
 
     private final RatingService ratingService;
@@ -26,7 +27,7 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    @PostMapping
+    @PostMapping("/{talkId}/ratings")
     @ResponseStatus(HttpStatus.CREATED)
     public RatingSummary rate(@PathVariable("talkId") String talkId,
                               @RequestBody RatingRequest request) {
@@ -34,9 +35,14 @@ public class RatingController {
         return ratingService.summary(talkId);
     }
 
-    @GetMapping
+    @GetMapping("/{talkId}/ratings")
     public RatingSummary summary(@PathVariable("talkId") String talkId) {
         return ratingService.summary(talkId);
+    }
+
+    @GetMapping("/top")
+    public List<RatingSummary> topRated() {
+        return ratingService.topRated();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
